@@ -1,0 +1,14 @@
+{
+  "name": "Bookmarks Quick Search",
+  "description": "Bookmarks Quick Search",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": [
+    "scripting",
+    "bookmarks"
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "icon4.png"
+  }
+}
