@@ -19,18 +19,15 @@ function onRejected(error) {
     console.log(`An error: ${error}`);
 }
 
-function flattenBookMarks(term) {
+function searchBookMarksAndFillTheUl(term) {
     const bookmarkList = document.getElementById('bookmarkList');
 
     while( bookmarkList.firstChild ){
         bookmarkList.removeChild( bookmarkList.firstChild );
     }
 
-
     term = term.toLowerCase();
-    let gettingTree = chrome.bookmarks.getTree();
-
-    gettingTree.then(logTree, onRejected)
+    chrome.bookmarks.getTree().then(logTree, onRejected)
         .then((bookMarkSearchResults) => {
             let tabIndex = 2;
             for (const bookMarkSearchResultItem of bookMarkSearchResults) {
@@ -120,8 +117,13 @@ function openInNewTab(url) {
     window.open(url, '_blank').focus();
 }
 
-function searchBookMarks(term) {
-    flattenBookMarks(term);
+function searchBookMarksWithControlOnUserInput(term) {
+    var searchSuggestInputElement = document.querySelector('input');
+    var duration = 500;
+    clearTimeout(searchSuggestInputElement._timer);
+    searchSuggestInputElement._timer = setTimeout(()=>{
+        searchBookMarksAndFillTheUl(term);
+    }, duration);
 }
 
 function processKeyStroke(event) {
@@ -134,14 +136,13 @@ function processKeyStroke(event) {
         var textBar = document.getElementById("searchSuggest");
 
         if (textBar.value.length > 2) {
-            searchBookMarks(textBar.value);
+            searchBookMarksWithControlOnUserInput(textBar.value);
         }
     }
 
 }
 
 function bootStrap() {
-    console.log('Hello World From Extension1');
     document.getElementById("searchSuggest").addEventListener("input", function(event) {
         processKeyStroke(event);
     });
