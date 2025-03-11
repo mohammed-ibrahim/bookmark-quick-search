@@ -48,6 +48,9 @@ function searchBookMarksAndFillTheUl(userInputSearchText) {
                 const listItem = document.createElement('li');
                 listItem.innerHTML = result.title;
                 listItem.setAttribute("link", result.url);
+                listItem.onclick = function () {
+                    openInNewTab(result.url);
+                }
 
                 const searchResultId = tabIndex - 1;
                 listItem.id = "search_results_".concat("" + searchResultId);
