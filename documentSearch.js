@@ -44,7 +44,7 @@ function evaluateScoreForField(field, boost, searchText, listOfSearchTerms) {
             if (fieldValue == term) {
                 numOfTermMatches += 1;
             } else if (fieldValue.startsWith(term)) {
-                numOfTermStartsWith += 0;
+                numOfTermStartsWith += 1;
             }
         }
     }
