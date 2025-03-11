@@ -2,14 +2,17 @@
 function recursivelyLoadBookmarksToList(nodes, items) {
     for (const node of nodes) {
         if (node.url) {
-            items.push(node);
+            items.push({
+                "url": node.url,
+                "title": node.title
+            });
         } else if (node.children) {
             recursivelyLoadBookmarksToList(node.children, items);
         }
     }
 }
 
-function logTree(bookmarkItems) {
+function scanBookMarksAndFlatten(bookmarkItems) {
     var items = [];
     recursivelyLoadBookmarksToList(bookmarkItems[0].children, items);
     return items;
@@ -19,30 +22,56 @@ function onRejected(error) {
     console.log(`An error: ${error}`);
 }
 
-function searchBookMarksAndFillTheUl(term) {
+function searchBookMarksAndFillTheUl(userInputSearchText) {
     const bookmarkList = document.getElementById('bookmarkList');
 
     while( bookmarkList.firstChild ){
         bookmarkList.removeChild( bookmarkList.firstChild );
     }
 
-    term = term.toLowerCase();
-    chrome.bookmarks.getTree().then(logTree, onRejected)
-        .then((bookMarkSearchResults) => {
+    chrome.bookmarks.getTree().then(scanBookMarksAndFlatten, onRejected)
+        .then((flattenedBookMarks) => {
             let tabIndex = 2;
-            for (const bookMarkSearchResultItem of bookMarkSearchResults) {
-                if (bookMarkSearchResultItem.title.toLowerCase().includes(term)) {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = bookMarkSearchResultItem.title;
-                    listItem.setAttribute("link", bookMarkSearchResultItem.url);
 
-                    const searchResultId = tabIndex - 1;
-                    listItem.id = "search_results_".concat("" + searchResultId);
-                    listItem.tabIndex = tabIndex;
-                    tabIndex++;
-                    bookmarkList.appendChild(listItem);
-                }
+            const scoreDoc = {
+                "title": 10,
+                "domain": 1
             }
+
+            // let dump = JSON.stringify(flattenedBookMarks);
+            // document.getElementById("infomation_bar").innerHTML = dump;
+            // return;
+
+            let results = performDocumentSearch(flattenedBookMarks, scoreDoc, userInputSearchText);
+
+            for (const result of results) {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = result.title;
+                listItem.setAttribute("link", result.url);
+                listItem.onclick = function () {
+                    openInNewTab(result.url);
+                }
+
+                const searchResultId = tabIndex - 1;
+                listItem.id = "search_results_".concat("" + searchResultId);
+                listItem.tabIndex = tabIndex;
+                tabIndex++;
+                bookmarkList.appendChild(listItem);
+            }
+
+            // for (const bookMarkSearchResultItem of flattenedBookMarks) {
+            //     if (bookMarkSearchResultItem.title.toLowerCase().includes(userInputSearchText)) {
+            //         const listItem = document.createElement('li');
+            //         listItem.innerHTML = bookMarkSearchResultItem.title;
+            //         listItem.setAttribute("link", bookMarkSearchResultItem.url);
+            //
+            //         const searchResultId = tabIndex - 1;
+            //         listItem.id = "search_results_".concat("" + searchResultId);
+            //         listItem.tabIndex = tabIndex;
+            //         tabIndex++;
+            //         bookmarkList.appendChild(listItem);
+            //     }
+            // }
         });
 }
 
