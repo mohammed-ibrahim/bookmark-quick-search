@@ -2,7 +2,7 @@
 function splitAndNormalise(textInput) {
     if (textInput) {
         let text = textInput.toLowerCase();
-        return text.split(" ");
+        return text.split(" ").filter(n => n);
     }
 
     return [];
@@ -60,6 +60,10 @@ function evaluateScoreForField(field, boost, searchText, listOfSearchTerms) {
 
 function performDocumentSearch(documents, scoreDocs, searchText) {
     const listOfSearchTerms = splitAndNormalise(searchText);
+
+    if (listOfSearchTerms.length < 1) {
+        return [];
+    }
 
     for (const searchDocument of documents) {
         let documentScore = 0;

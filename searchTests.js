@@ -36,6 +36,16 @@ function test1CanPerformPrefixSearch() {
     return SUCCESS;
 }
 
+function test2CanRemoveEmptySpacesFromSearchToken() {
+    let results = performDocumentSearch(testSearchDocuments, {"title": 10}, "    ");
+    if (results.length != 0) {
+        console.log("Search length failed");
+        return "Search length failed";
+    }
+
+    return SUCCESS;
+}
+
 function logTestResult(method, testResult) {
     const bookmarkList = document.getElementById('resultList');
     const listItem = document.createElement('li');
@@ -45,6 +55,7 @@ function logTestResult(method, testResult) {
 
 function bootStrap() {
     logTestResult("test1CanPerformPrefixSearch", test1CanPerformPrefixSearch());
+    logTestResult("test2CanRemoveEmptySpacesFromSearchToken", test2CanRemoveEmptySpacesFromSearchToken());
 }
 
 window.onload = bootStrap

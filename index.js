@@ -4,11 +4,27 @@ function recursivelyLoadBookmarksToList(nodes, items) {
         if (node.url) {
             items.push({
                 "url": node.url,
-                "title": node.title
+                "title": node.title,
+                "domain": getDomainName(node.url)
             });
         } else if (node.children) {
             recursivelyLoadBookmarksToList(node.children, items);
         }
+    }
+}
+
+function getDomainName(url, subdomain) {
+    try {
+        // Ensure the URL has a scheme; if not, prepend 'http://'
+        let formattedUrl = url.startsWith('http://') || url.startsWith('https://') ? url : 'http://' + url;
+
+        // Use the URL constructor to parse the domain
+        let domain = new URL(formattedUrl).hostname;
+
+        return domain;
+    } catch (error) {
+        console.error("Invalid URL", error);
+        return null;
     }
 }
 
@@ -46,7 +62,7 @@ function searchBookMarksAndFillTheUl(userInputSearchText) {
 
             for (const result of results) {
                 const listItem = document.createElement('li');
-                listItem.innerHTML = result.title;
+                listItem.innerHTML = result.title + "<br/><label>" + result.domain + "</label>"
                 listItem.setAttribute("link", result.url);
                 listItem.onclick = function () {
                     openInNewTab(result.url);
