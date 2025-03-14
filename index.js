@@ -75,23 +75,10 @@ function searchBookMarksAndFillTheUl(userInputSearchText) {
                 bookmarkList.appendChild(listItem);
             }
 
-            // for (const bookMarkSearchResultItem of flattenedBookMarks) {
-            //     if (bookMarkSearchResultItem.title.toLowerCase().includes(userInputSearchText)) {
-            //         const listItem = document.createElement('li');
-            //         listItem.innerHTML = bookMarkSearchResultItem.title;
-            //         listItem.setAttribute("link", bookMarkSearchResultItem.url);
-            //
-            //         const searchResultId = tabIndex - 1;
-            //         listItem.id = "search_results_".concat("" + searchResultId);
-            //         listItem.tabIndex = tabIndex;
-            //         tabIndex++;
-            //         bookmarkList.appendChild(listItem);
-            //     }
-            // }
         });
 }
 
-document.onkeyup = processKeyStrokeV2;
+document.onkeyup = processDocumentKeyStroke;
 
 function processUpArrow(e) {
     const inputEditor = document.getElementById("searchSuggest");
@@ -137,7 +124,7 @@ function processDownArrow(e) {
     }
 }
 
-function processKeyStrokeV2(e) {
+function processDocumentKeyStroke(e) {
     e = e || window.event;
 
     // console.log(e.keyCode);
@@ -171,7 +158,7 @@ function searchBookMarksWithControlOnUserInput(term) {
     }, duration);
 }
 
-function processKeyStroke(event) {
+function processInputKeyStroke(event) {
 
     if (event.key == "Enter") {
 
@@ -189,7 +176,7 @@ function processKeyStroke(event) {
 
 function bootStrap() {
     document.getElementById("searchSuggest").addEventListener("input", function(event) {
-        processKeyStroke(event);
+        processInputKeyStroke(event);
     });
     document.getElementById("searchSuggest").focus();
 }
