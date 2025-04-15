@@ -1,8 +1,22 @@
+function removeFirstIfNotAlphanumeric(str) {
+    if (!str || str.length === 0) return str; // handle empty string
+    const firstChar = str.charAt(0);
+    const isAlphanumeric = /^[a-zA-Z0-9]$/.test(firstChar);
+    return isAlphanumeric ? str : str.slice(1);
+}
 
-function splitAndNormalise(textInput) {
+function splitAndNormalise(textInput, sanitizeFirstLetter) {
     if (textInput) {
         let text = textInput.toLowerCase();
-        return text.split(" ").filter(n => n);
+        return text.split(" ")
+            .filter(n => n)
+            .map(g => {
+                if (sanitizeFirstLetter) {
+                    return removeFirstIfNotAlphanumeric(g);
+                } else {
+                    return g;
+                }
+            });
     }
 
     return [];
@@ -33,7 +47,7 @@ function evaluateScoreForField(field, boost, searchText, listOfSearchTerms) {
         }
     }
 
-    const fieldValues = splitAndNormalise(field);
+    const fieldValues = splitAndNormalise(field, true);
 
 
     let numOfTermMatches = 0;
@@ -59,7 +73,7 @@ function evaluateScoreForField(field, boost, searchText, listOfSearchTerms) {
 }
 
 function performDocumentSearch(documents, scoreDocs, searchText) {
-    const listOfSearchTerms = splitAndNormalise(searchText);
+    const listOfSearchTerms = splitAndNormalise(searchText, false);
 
     if (listOfSearchTerms.length < 1) {
         return [];
