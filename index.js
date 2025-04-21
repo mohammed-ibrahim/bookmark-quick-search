@@ -59,21 +59,28 @@ function searchBookMarksAndFillTheUl(userInputSearchText) {
             // return;
 
             let results = performDocumentSearch(flattenedBookMarks, scoreDoc, userInputSearchText);
+            let informationBar = document.getElementById("infomation_bar");
+            if (results.length > 0) {
+                for (const result of results) {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = result.title + "<br/><label>" + result.domain + "</label>"
+                    listItem.setAttribute("link", result.url);
+                    listItem.onclick = function () {
+                        openInNewTab(result.url);
+                    }
 
-            for (const result of results) {
-                const listItem = document.createElement('li');
-                listItem.innerHTML = result.title + "<br/><label>" + result.domain + "</label>"
-                listItem.setAttribute("link", result.url);
-                listItem.onclick = function () {
-                    openInNewTab(result.url);
+                    const searchResultId = tabIndex - 1;
+                    listItem.id = "search_results_".concat("" + searchResultId);
+                    listItem.tabIndex = tabIndex;
+                    tabIndex++;
+                    bookmarkList.appendChild(listItem);
                 }
-
-                const searchResultId = tabIndex - 1;
-                listItem.id = "search_results_".concat("" + searchResultId);
-                listItem.tabIndex = tabIndex;
-                tabIndex++;
-                bookmarkList.appendChild(listItem);
+                informationBar.innerHTML = "";
+            } else {
+                informationBar.innerHTML = "No Results Found";
             }
+
+
 
         });
 }
