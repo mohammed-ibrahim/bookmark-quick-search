@@ -158,7 +158,7 @@ function openInNewTab(url) {
 
 function searchBookMarksWithControlOnUserInput(term) {
     var searchSuggestInputElement = document.querySelector('input');
-    var duration = 500;
+    var duration = 300;
     clearTimeout(searchSuggestInputElement._timer);
     searchSuggestInputElement._timer = setTimeout(()=>{
         searchBookMarksAndFillTheUl(term);
